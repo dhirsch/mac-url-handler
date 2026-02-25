@@ -34,7 +34,22 @@ struct ShimConfig: Codable {
     var rules: [HostRule]
 }
 
-let shimBundleID = "com.danielhirsch.urlhandlershim"
+let defaultShimBundleID = "com.urlhandlershim.app"
+
+func isValidBundleID(_ value: String) -> Bool {
+    let pattern = "^[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+$"
+    return value.range(of: pattern, options: .regularExpression) != nil
+}
+
+func resolvedShimBundleID() -> String {
+    guard let raw = ProcessInfo.processInfo.environment["SHIM_BUNDLE_ID"]?.trimmingCharacters(in: .whitespacesAndNewlines),
+          !raw.isEmpty else {
+        return defaultShimBundleID
+    }
+    return isValidBundleID(raw) ? raw : defaultShimBundleID
+}
+
+let shimBundleID = resolvedShimBundleID()
 
 func usage() -> String {
     return """
@@ -62,6 +77,9 @@ func usage() -> String {
       ./url-handler.swift open zoommtg://zoom.us/join
       ./url-handler.swift host-rule add meet.google.com us.zoom.xos
       ./url-handler.swift install-shim
+
+    Optional env:
+      SHIM_BUNDLE_ID=com.yourname.urlhandlershim ./url-handler.swift install-shim
     """
 }
 

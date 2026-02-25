@@ -1,7 +1,7 @@
 import AppKit
 import Foundation
 
-let shimBundleID = "com.danielhirsch.urlhandlershim"
+let shimBundleID = Bundle.main.bundleIdentifier ?? "com.urlhandlershim.app"
 
 struct HostRule: Codable {
     let host: String

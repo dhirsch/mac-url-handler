@@ -8,6 +8,14 @@ macOS lets you set default apps for broad schemes like `http`, `https`, and `mai
 - verify your setup with a built-in doctor check
 - install a lightweight shim that routes specific hosts to specific apps while keeping a default browser fallback
 
+## Quick warning
+
+I threw this together to solve an immediate annoyance I have personally. It's
+been written primarily by Codex and has *not* been supervised especially well.
+You should definitely review any code before running it as I make no promises
+this is bug free or cause other undesired consequences. But, I feel like someone
+else out there might run into similar annoyances and find this helpful. 
+
 ## What it does
 
 - `list`: show URL scheme handlers currently recorded in LaunchServices.
@@ -26,6 +34,19 @@ cd macos-url-handlers
 chmod +x url-handler.swift
 ./url-handler.swift get mailto
 ```
+
+## Bundle identifier
+
+The shim bundle ID is user-neutral by default and can be customized.
+
+- Default: `com.urlhandlershim.app`
+- Override with `SHIM_BUNDLE_ID` (recommended for forks/published variants):
+
+```bash
+SHIM_BUNDLE_ID=com.yourname.urlhandlershim ./url-handler.swift install-shim
+```
+
+Use the same `SHIM_BUNDLE_ID` value consistently for `build-shim`, `install-shim`, and `doctor`.
 
 ## Examples
 
@@ -80,6 +101,7 @@ To revert:
 - Uses LaunchServices (`LSSetDefaultHandlerForURLScheme`) and LaunchServices preferences for listing handlers.
 - Setting handlers may require a valid installed app bundle ID (for example: `com.apple.Safari`).
 - Shim config location: `~/Library/Application Support/URLHandlerShim/config.json`.
+- `URLHandlerShim/main.swift` is source code and belongs in the repo; `build-shim` compiles it into `~/Applications/URLHandlerShim.app`.
 
 ## License
 
